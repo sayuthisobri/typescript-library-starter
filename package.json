@@ -3,81 +3,48 @@
   "version": "0.0.0",
   "description": "",
   "keywords": [],
-  "main": "dist/--libraryname--.umd.js",
-  "module": "dist/--libraryname--.es5.js",
-  "typings": "dist/types/--libraryname--.d.ts",
-  "files": [
-    "dist"
-  ],
-  "author": "--username-- <--usermail-->",
   "repository": {
     "type": "git",
     "url": ""
   },
   "license": "MIT",
-  "engines": {
-    "node": ">=6.0.0"
-  },
+  "author": "--username-- <--usermail-->",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/--libraryname--.umd.js",
+  "module": "dist/--libraryname--.es5.js",
+  "typings": "dist/types/--libraryname--.d.ts",
   "scripts": {
-    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist prod",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
-    "pack": "make-dir prod && npm-pack-zip --dst prod",
-    "start": "rollup -c rollup.config.ts -w",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "precommit": "lint-staged",
     "commit": "git-cz",
+    "deploy-docs": "ts-node tools/gh-pages-publish",
+    "postinstall": "ts-node tools/init",
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "pack": "make-dir prod && npm-pack-zip --dst prod",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "precommit": "lint-staged",
-    "postinstall": "ts-node tools/init"
-  },
-  "release": {
-    "publish": [
-      "@semantic-release/npm",
-      {
-        "path": "@semantic-release/github"
-      }
-    ],
-    "tarballDir": "prod",
-    "assets": [
-      {
-        "path": "prod/*.zip",
-        "label": "Production Zip"
-      },
-      {
-        "path": "prod/*.tgz",
-        "label": "Production Tarball"
-      }
-    ]
-  },
-  "lint-staged": {
-    "{src,test}/**/*.ts": [
-      "prettier --write",
-      "git add"
-    ]
+    "start": "rollup -c rollup.config.ts -w",
+    "test": "jest",
+    "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
+    "test:watch": "jest --watch"
   },
   "config": {
     "commitizen": {
       "path": "node_modules/cz-conventional-changelog"
-    },
-    "validate-commit-msg": {
-      "types": "conventional-commit-types",
-      "helpMessage": "Use \"npm run commit\" instead, we use conventional-changelog format :) (https://github.com/commitizen/cz-cli)"
     }
   },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  },
   "jest": {
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/*.{js,ts}"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
@@ -91,47 +58,87 @@
         "statements": 95
       }
     },
-    "collectCoverage": true
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    }
   },
   "devDependencies": {
-    "@types/jest": "^22.0.0",
-    "@types/node": "^10.5.5",
-    "colors": "^1.1.2",
-    "commitizen": "^2.9.6",
-    "coveralls": "^3.0.0",
-    "cross-env": "^5.0.1",
-    "cz-conventional-changelog": "^2.0.0",
-    "husky": "^0.14.0",
-    "jest": "^22.0.2",
-    "lint-staged": "^7.1.3",
+    "@commitlint/cli": "^7.1.2",
+    "@commitlint/config-conventional": "^7.1.2",
+    "@types/jest": "^23.3.2",
+    "@types/node": "^10.11.0",
+    "colors": "^1.3.2",
+    "commitizen": "^3.0.0",
+    "coveralls": "^3.0.2",
+    "cross-env": "^5.2.0",
+    "cz-conventional-changelog": "^2.1.0",
+    "husky": "^1.0.1",
+    "jest": "^23.6.0",
+    "jest-config": "^23.6.0",
+    "lint-staged": "^7.3.0",
     "lodash.camelcase": "^4.3.0",
     "make-dir-cli": "^1.0.0",
     "npm-pack-zip": "^1.2.6",
-    "prettier": "^1.13.4",
+    "prettier": "^1.14.3",
     "prompt": "^1.0.0",
-    "replace-in-file": "^3.0.0-beta.2",
-    "rimraf": "^2.6.1",
-    "rollup": "^0.59.2",
-    "rollup-plugin-commonjs": "^9.0.0",
-    "rollup-plugin-json": "^3.0.0",
-    "rollup-plugin-node-resolve": "^3.0.0",
+    "replace-in-file": "^3.4.2",
+    "rimraf": "^2.6.2",
+    "rollup": "^0.66.2",
+    "rollup-plugin-commonjs": "^9.1.8",
+    "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
-    "rollup-plugin-typescript2": "^0.11.1",
+    "rollup-plugin-typescript2": "^0.17.0",
     "rollup-plugin-uglify": "^4.0.0",
-    "semantic-release": "^15.8.1",
+    "semantic-release": "^15.9.16",
     "travis-deploy-once": "^5.0.1",
-    "ts-jest": "^22.0.0",
-    "ts-node": "^6.0.0",
-    "tslint": "^5.8.0",
-    "tslint-config-prettier": "^1.1.0",
-    "tslint-config-standard": "^7.0.0",
-    "typedoc": "^0.11.0",
-    "typescript": "^2.6.2",
+    "ts-jest": "^23.10.2",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.15.0",
+    "tslint-config-standard": "^8.0.1",
+    "typedoc": "^0.12.0",
+    "typescript": "^3.0.3",
     "uglify-es": "^3.3.9",
     "validate-commit-msg": "^2.12.2"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "{src,test}/**/*.ts": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "release": {
+    "publish": [
+      "@semantic-release/npm",
+      {
+        "path": "@semantic-release/github"
+      }
+    ],
+    "tarballDir": "prod",
+    "assets": [{
+        "path": "prod/*.zip",
+        "label": "Production Zip"
+      },
+      {
+        "path": "prod/*.tgz",
+        "label": "Production Tarball"
+      }
+    ]
   }
 }
